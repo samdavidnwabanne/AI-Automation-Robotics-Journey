@@ -28,7 +28,7 @@ Google Form → n8n → AI Model → Summary → Google Sheets
 
 The workflow receives the user's name and feedback through the form submission.
 
-![Trigger/Input](AI-Automation-Triggered.png)
+![Trigger/Input](AI-Automation-Trigger.png)
 
 ### 2. AI Processing
 

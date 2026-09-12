@@ -53,13 +53,13 @@ The workflow receives the user's name and feedback through the form submission.
 
 The user's feedback is passed into the AI step, where the prompt instructs the model to process and summarise it.
 
-![AI Processing](AI-Automation-AI-Processing.png)
+![AI Processing](../Projects/First-AI-Automation/AI-Automation-AI-Processing.png)
 
 ### 3. Final Output
 
 The original feedback and AI-generated summary are saved to Google Sheets.
 
-![Final Output](AI-Automation-Output.png)
+![Final Output](../Projects/First-AI-Automation/AI-Automation-Output.png)
 
 ## Key Concepts
 

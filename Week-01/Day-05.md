@@ -48,7 +48,7 @@ I tested the workflow with several different inputs to see how well it handled v
 The workflow receives the user's name and feedback through the form submission.
 
 ![Trigger/Input](../Projects/First-AI-Automation/AI-Automation-Trigger.png)
-"Fix image paths"
+
 ### 2. AI Processing
 
 The user's feedback is passed into the AI step, where the prompt instructs the model to process and summarise it.

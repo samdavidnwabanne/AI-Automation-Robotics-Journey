@@ -14,8 +14,8 @@ This is my first practical AI automation workflow, built with n8n. The workflow 
 
 ## Workflow
 
-User Input → AI Process → Output
-Google Form → n8n → AI Model (Gemini) → Summary → Google Sheets
+ User Input → AI Process → Output
+ Google Form → n8n → AI Model (Gemini) → Summary → Google Sheets
 
 
 ## How It Works

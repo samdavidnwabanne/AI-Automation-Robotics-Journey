@@ -19,3 +19,11 @@ By the end of the 8 weeks, I want to have a better understanding of AI, Automati
 ## Journey
 
 I’ll be documenting what I learn, the things I build, and the progress I make throughout the programme.
+
+## Projects
+
+### First AI Automation
+
+A simple n8n workflow that receives user feedback, sends it to an AI model for processing and summarisation, and saves the result to Google Sheets.
+
+[View Project](Projects/First-AI-Automation)

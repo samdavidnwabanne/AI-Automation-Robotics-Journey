@@ -10,7 +10,7 @@
 
 ## Overview
 
-This is my first practical AI automation workflow, built with n8n. The workflow receives user feedback, sends it to an AI model for processing and summarisation, and saves the original feedback along with the AI-generated summary to Google Sheets — turning unstructured, free-text feedback into a consistent, reviewable format with no manual data entry.
+This is my first practical AI automation workflow, built with n8n. The workflow receives user feedback, sends it to an AI model for processing and summarisation, and saves the original feedback along with the AI-generated summary to Google Sheets, turning unstructured, free text feedback into a consistent, reviewable format with no manual data entry.
 
 ## Workflow
 
@@ -74,4 +74,4 @@ The original feedback and AI-generated summary are saved to Google Sheets.
 
 ## Reflection
 
-Today I moved from learning about AI and automation separately to combining them into one practical, working system. Building the workflow helped me understand how a well-structured prompt directly determines the quality and consistency of the AI's output — and testing it with edge cases (long input, another language, nonsense text, empty submissions) taught me that a good automation isn't just one that works on clean data, but one that fails safely when it doesn't. This project gave me a much clearer picture of how AI can be embedded into automated processes to turn raw, unstructured input into useful, structured output with minimal manual effort.
+Today I moved from learning about AI and automation separately to combining them into one practical, working system. Building the workflow helped me understand how a well structured prompt directly determines the quality and consistency of the AI's output, and testing it with edge cases (long input, another language, nonsense text, empty submissions) taught me that a good automation isn't just one that works on clean data, but one that fails safely when it doesn't. This project gave me a much clearer picture of how AI can be embedded into automated processes to turn raw, unstructured input into useful, structured output with minimal manual effort.

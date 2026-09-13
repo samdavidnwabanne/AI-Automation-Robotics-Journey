@@ -22,7 +22,7 @@ For each use case, I wrote a vague prompt, tested it, then rewrote it using RCTF
 
 ## Reflection
 
-I explored how the way a prompt is structured directly affects the quality and usefulness of an AI response. The biggest lesson was that **vagueness in, vagueness out** — a short, underspecified prompt almost always produced a generic or unusable answer, while adding role, context, and a defined output format consistently produced sharper, more actionable results. Iteration mattered as much as the initial prompt: the first draft was rarely right, and reading the output to see *what* was missing was the fastest way to improve the next attempt.
+I explored how the way a prompt is structured directly affects the quality and usefulness of an AI response. The biggest lesson was that **vagueness in, vagueness out**, a short underspecified prompt almost always produced a generic or unusable answer, while adding role, context, and a defined output format consistently produced sharper, more actionable results. Iteration mattered as much as the initial prompt: the first draft was rarely right, and reading the output to see *what* was missing was the fastest way to improve the next attempt.
 
 ## Key Takeaway
 

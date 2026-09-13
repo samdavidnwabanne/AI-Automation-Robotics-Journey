@@ -5,7 +5,7 @@
 - Practiced structuring effective AI prompts using the **RCTF framework** (Role, Context, Task, Format).
 - Explored how giving an AI a clear role, relevant context, a specific task, and an expected output format changes the quality of its responses.
 - Built and tested a small **personal prompt library** covering five recurring use cases: research, summarisation, data extraction, content generation, and problem solving.
-- Practiced prompt iteration — writing a vague first attempt, testing it, identifying what was missing, and refining it into a stronger version.
+- Practiced prompt iteration, writing a vague first attempt, testing it, identifying what was missing, and refining it into a stronger version.
 - Applied prompting techniques (role prompting, contextual prompting, and format-constrained output) to improve AI-assisted problem solving and communication.
 
 ## What I Built

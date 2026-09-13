@@ -82,27 +82,27 @@ The diagram shows the flow from the customer's feedback submission through the a
 
 ### 1. n8n Workflow Canvas
 
-![n8n Workflow Canvas](../../Images/Day-03-Workflow-Canvas.png)
+![n8n Workflow Canvas](../Projects/Images/Day-03-Workflow-Canvas.png)
 
 ### 2. Feedback Form
 
-![Feedback Form](../../Images/Day-03-Feedback-Form.png)
+![Feedback Form](../Projects/Images/Day-03-Feedback-Form.png)
 
 ### 3. Gmail Configuration
 
-![Gmail Configuration](../../Images/Day-03-Gmail-Configuration.png)
+![Gmail Configuration](../Projects/Images/Day-03-Gmail-Configuration.png)
 
 ### 4. Email Notification
 
-![Email Notification](../../Images/Day-03-Email-Notification.png)
+![Email Notification](../Projects/Images/Day-03-Email-Notification.png)
 
 ### 5. Received Email
 
-![Received Email](../../Images/Day-03-Received-Email.png)
+![Received Email](../Projects/Images/Day-03-Received-Email.png)
 
 ### 6. Workflow Diagram
 
-![Workflow Diagram](../../Images/Day-03-Workflow-Diagram.png)
+![Workflow Diagram](../Projects/Images/Day-03-Workflow-Diagram.png)
 
 ## Key Takeaway
 

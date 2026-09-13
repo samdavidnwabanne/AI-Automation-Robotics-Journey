@@ -86,11 +86,11 @@ The diagram shows the flow from the customer's feedback submission through the a
 
 ### 2. Feedback Form
 
-![Feedback Form](../Projects/Images/Day-03-Feedback-Form.png)
+![Feedback Form](../Projects/Images/Day-03-Feedback-Form.PNG)
 
 ### 3. Gmail Configuration
 
-![Gmail Configuration](../Projects/Images/Day-03-Gmail-Configuration.png)
+![Gmail Configuration](../Projects/Images/Day-03-Gmail-Configuration.PNG)
 
 ### 4. Email Notification
 

@@ -1,0 +1,478 @@
+{
+  "name": "University Policy Helpdesk (RAG)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "helpdesk",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a5835f7e-5c0e-4e6b-8c0f-022a1ec7650d",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "9f961e09-8d0b-4380-948a-c47de83c44e5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', temperature: 0, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: 'You are a triage assistant for a university student-services helpdesk. Classify the student question. Respond ONLY with JSON: {\"category\": \"fees | registration | deferral | exams | other\", \"sensitive\": true or false, \"search_query\": \"short search query that rewrites the question\"}. Mark sensitive as true for anything involving harassment, mental health, disciplinary action, or appeals.' }, { role: 'user', content: 'Question: ' + $json.body.question } ] }) }}",
+        "options": {}
+      },
+      "id": "6750938a-488d-4ba7-b47d-4a6601210cb5",
+      "name": "Step 1 - Classify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const question = $('Webhook').first().json.body.question || '';\nlet cls = { category: 'other', sensitive: true, search_query: question };\ntry {\n  cls = JSON.parse($input.first().json.choices[0].message.content);\n} catch (e) {\n  cls = { category: 'other', sensitive: true, search_query: question };\n}\nconst keywords = /(harass|suicid|self-harm|mental health|disciplin|appeal|abuse|assault)/i;\nconst sensitive = cls.sensitive === true || keywords.test(question);\nreturn [{ json: { question, category: cls.category, search_query: cls.search_query || question, sensitive } }];"
+      },
+      "id": "c0e93508-03d4-4426-84d0-a4569344caad",
+      "name": "Parse classification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "b56b7a89-b808-441f-891b-9c17879c17fa",
+              "leftValue": "={{ $json.sensitive }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8ae1ff4f-c282-42a7-a777-b81f3e5d945e",
+      "name": "Sensitive?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// SAMPLE knowledge base. Replace with a vector store or your real policy data.\nconst KB = [\n  { policy: 'Fee Payment Policy', section: '3.1', effective: '2026-01-01', active: true,\n    text: 'Tuition fees must be paid in full by the end of week 2 of each semester. Late payments attract a 5% penalty.' },\n  { policy: 'Fee Payment Policy', section: '3.4', effective: '2026-01-01', active: true,\n    text: 'Students may apply for a payment plan by submitting a request to the bursary before the fee deadline.' },\n  { policy: 'Course Registration Policy', section: '2.2', effective: '2026-01-01', active: true,\n    text: 'Course registration closes at the end of week 1. Late registration requires written approval from the head of department.' },\n  { policy: 'Deferral Policy', section: '4.1', effective: '2026-01-01', active: true,\n    text: 'A student may defer their studies for up to two semesters by submitting a deferral form to the registrar before week 4.' },\n  { policy: 'Examination Regulations', section: '5.3', effective: '2026-01-01', active: true,\n    text: 'A student who misses an examination with a valid medical reason may sit a supplementary examination in the next assessment period.' },\n  { policy: 'Old Fee Policy', section: '3.1', effective: '2023-01-01', active: false,\n    text: 'Tuition fees must be paid by the end of week 4 of each semester.' }\n];\nconst stop = new Set(['the','and','for','can','how','what','when','who','are','you','with','from','that','this','have','does','need','about','your','their','into','will']);\nconst tokens = (s) => [...new Set(String(s).toLowerCase().replace(/[^a-z0-9\\s]/g, ' ').split(/\\s+/).filter(w => w.length > 2 && !stop.has(w)))];\nconst { question, search_query } = $input.first().json;\nconst q = new Set(tokens(search_query));\nconst MIN_SCORE = 2;\nconst passages = KB.filter(p => p.active)\n  .map(p => ({ ...p, score: tokens(p.policy + ' ' + p.text).filter(w => q.has(w)).length }))\n  .filter(p => p.score >= MIN_SCORE)\n  .sort((a, b) => b.score - a.score)\n  .slice(0, 4);\nconst passagesText = passages.map((p, i) => `[${i + 1}] ${p.policy}, section ${p.section}: ${p.text}`).join('\\n');\nreturn [{ json: { question, found: passages.length > 0, passagesText, passages } }];"
+      },
+      "id": "53d38ba6-3b8f-4868-ac2d-bd63d2225d99",
+      "name": "Step 2 - Retrieve passages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f97d8af4-8655-46b4-bfaa-60f001d25793",
+              "leftValue": "={{ $json.found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "913b0ac6-4ea1-4c0a-bba9-abe4b738568e",
+      "name": "Passages found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', temperature: 0, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: 'You are a helpful student-services assistant. Answer the question using ONLY the policy excerpts provided. If the excerpts do not contain the answer, set answerable to false. Do not guess or use outside knowledge. Respond ONLY with JSON: {\"answerable\": true or false, \"answer\": \"max 100 words, plain language\", \"source\": \"policy name and section\", \"quote\": \"the exact sentence copied from the excerpts that supports the answer\"}' }, { role: 'user', content: 'Policy excerpts:\\n' + $json.passagesText + '\\n\\nQuestion: ' + $json.question } ] }) }}",
+        "options": {}
+      },
+      "id": "6c736759-6cce-4627-abca-e933202ff936",
+      "name": "Step 3 - Draft answer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const norm = (s) => String(s || '').toLowerCase().replace(/\\s+/g, ' ').trim();\nconst ctx = $('Step 2 - Retrieve passages').first().json;\nlet out = { valid: false, reason: 'invalid JSON', result: null };\ntry {\n  const r = JSON.parse($input.first().json.choices[0].message.content);\n  const schemaOk = typeof r.answerable === 'boolean' && typeof r.answer === 'string' && typeof r.source === 'string' && typeof r.quote === 'string';\n  if (!schemaOk) out.reason = 'schema check failed';\n  else if (!r.answerable) out.reason = 'model said not answerable';\n  else if (r.answer.split(/\\s+/).length > 100) out.reason = 'answer over 100 words';\n  else if (norm(r.quote).length < 15) out.reason = 'quote too short';\n  else if (!norm(ctx.passagesText).includes(norm(r.quote))) out.reason = 'quote not found in retrieved passages';\n  else out = { valid: true, reason: 'ok', result: r };\n} catch (e) {\n  out = { valid: false, reason: 'invalid JSON', result: null };\n}\nreturn [{ json: { ...out, question: ctx.question } }];"
+      },
+      "id": "1d88c7ba-1d15-4d7b-8a8e-9279d613060b",
+      "name": "Step 4 - Validate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "43a8d086-f48d-4f57-aead-8c1be3b10a3b",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4dac5ca5-9522-41b5-8376-deb9f1da506e",
+      "name": "Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1920,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', temperature: 0, response_format: { type: 'json_object' }, messages: [ { role: 'system', content: 'You are a helpful student-services assistant. Answer the question using ONLY the policy excerpts provided. If the excerpts do not contain the answer, set answerable to false. Do not guess or use outside knowledge. Respond ONLY with JSON: {\"answerable\": true or false, \"answer\": \"max 100 words, plain language\", \"source\": \"policy name and section\", \"quote\": \"the exact sentence copied from the excerpts that supports the answer\"}' }, { role: 'user', content: 'Policy excerpts:\\n' + $('Step 2 - Retrieve passages').first().json.passagesText + '\\n\\nQuestion: ' + $('Step 2 - Retrieve passages').first().json.question + '\\n\\nYour previous answer failed validation (' + $json.reason + '). Try again. The quote must be copied word for word from the excerpts.' } ] }) }}",
+        "options": {}
+      },
+      "id": "fbc38b87-182f-40e9-ad81-0db00038a950",
+      "name": "Step 3b - Redraft",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2160,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const norm = (s) => String(s || '').toLowerCase().replace(/\\s+/g, ' ').trim();\nconst ctx = $('Step 2 - Retrieve passages').first().json;\nlet out = { valid: false, reason: 'invalid JSON', result: null };\ntry {\n  const r = JSON.parse($input.first().json.choices[0].message.content);\n  const schemaOk = typeof r.answerable === 'boolean' && typeof r.answer === 'string' && typeof r.source === 'string' && typeof r.quote === 'string';\n  if (!schemaOk) out.reason = 'schema check failed';\n  else if (!r.answerable) out.reason = 'model said not answerable';\n  else if (r.answer.split(/\\s+/).length > 100) out.reason = 'answer over 100 words';\n  else if (norm(r.quote).length < 15) out.reason = 'quote too short';\n  else if (!norm(ctx.passagesText).includes(norm(r.quote))) out.reason = 'quote not found in retrieved passages';\n  else out = { valid: true, reason: 'ok', result: r };\n} catch (e) {\n  out = { valid: false, reason: 'invalid JSON', result: null };\n}\nreturn [{ json: { ...out, question: ctx.question } }];"
+      },
+      "id": "ff5be848-fded-4403-82ae-8b1277433f98",
+      "name": "Step 4b - Validate again",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "95b3e6ac-53b9-4650-a759-60326217e08d",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "146081ab-6829-4be5-af4d-04b0dc027975",
+      "name": "Valid again?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2640,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'answered', answer: $json.result.answer, source: $json.result.source, quote: $json.result.quote }) }}",
+        "options": {}
+      },
+      "id": "21e388c9-7182-42c3-aa6b-1f4578f72754",
+      "name": "Respond - answer",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2880,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'escalated', message: 'Your question has been passed to a member of staff, who will reply to you directly.' }) }}",
+        "options": {}
+      },
+      "id": "b935d9ad-0f72-411f-ac12-28a1cea06e77",
+      "name": "Respond - escalate to staff",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2880,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## University helpdesk: RAG workflow\n**Setup**\n1. Open \"Step 1 - Classify\", create a Header Auth credential (Name: Authorization, Value: Bearer YOUR_OPENROUTER_KEY), then select it in \"Step 3 - Draft answer\" and \"Step 3b - Redraft\" too.\n2. Replace the sample policies in \"Step 2 - Retrieve passages\" with your own, or swap in a vector store.\n3. Activate, then test:\n`curl -X POST <your-webhook-url> -H \"Content-Type: application/json\" -d '{\"question\":\"When is the fee deadline?\"}'`\n\n**Escalation:** add an Email or Slack node before \"Respond - escalate to staff\" to alert your team.\nDashed routes in the diagram: sensitive topic, no match, failed validation twice.",
+        "height": 300,
+        "width": 620
+      },
+      "id": "63833c01-696b-4fd4-b261-a646b499740a",
+      "name": "Setup notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -60
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Step 1 - Classify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 1 - Classify": {
+      "main": [
+        [
+          {
+            "node": "Parse classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse classification": {
+      "main": [
+        [
+          {
+            "node": "Sensitive?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sensitive?": {
+      "main": [
+        [
+          {
+            "node": "Respond - escalate to staff",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Step 2 - Retrieve passages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 2 - Retrieve passages": {
+      "main": [
+        [
+          {
+            "node": "Passages found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Passages found?": {
+      "main": [
+        [
+          {
+            "node": "Step 3 - Draft answer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond - escalate to staff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 3 - Draft answer": {
+      "main": [
+        [
+          {
+            "node": "Step 4 - Validate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 4 - Validate": {
+      "main": [
+        [
+          {
+            "node": "Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid?": {
+      "main": [
+        [
+          {
+            "node": "Respond - answer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Step 3b - Redraft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 3b - Redraft": {
+      "main": [
+        [
+          {
+            "node": "Step 4b - Validate again",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Step 4b - Validate again": {
+      "main": [
+        [
+          {
+            "node": "Valid again?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid again?": {
+      "main": [
+        [
+          {
+            "node": "Respond - answer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond - escalate to staff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

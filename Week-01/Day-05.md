@@ -1,4 +1,4 @@
-# Day 05 — First AI Automation
+# Day 5: First AI Automation
 
 ## What I Worked On
 

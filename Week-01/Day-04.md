@@ -1,4 +1,4 @@
-# Day 04 — Prompt Engineering
+# Day 4: Prompt Engineering
 
 ## What I Worked On
 

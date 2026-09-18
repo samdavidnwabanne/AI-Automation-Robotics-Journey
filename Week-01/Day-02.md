@@ -1,4 +1,4 @@
-# Day 02 — AI Task Exploration
+# Day 2: AI Task Exploration
 
 ## Overview
 

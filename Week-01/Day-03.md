@@ -1,4 +1,4 @@
-# Day 03 — Introduction to Automation
+# Day 3: Introduction to Automation
 
 ## What I Worked On
 

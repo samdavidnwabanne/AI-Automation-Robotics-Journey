@@ -1,6 +1,6 @@
 # Day 6: Advanced Prompt Engineering
 
-## Topic
+## What I Learned
 How modern LLM applications use prompts, context, structured outputs, RAG,
 and validation to produce reliable results.
 

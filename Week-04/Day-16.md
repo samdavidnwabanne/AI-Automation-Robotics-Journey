@@ -51,9 +51,9 @@ Slow blink (2000 ms):
 ![Slow blink circuit and Serial Monitor](../Projects/Images/Blinking%20Test%20Day%2016%20%40delay%282000%29.PNG)
 
 ## Files
-- [Day16_Blink_100ms_fast.ino](../Projects/Day16_Blink_100ms_fast.ino)
-- [Day16_Blink_2000ms_slow.ino](../Projects/Day16_Blink_2000ms_slow.ino)
-- [Blinking Test Day 16.brd](../Projects/Blinking%20Test%20Day%2016.brd) (Tinkercad circuit export)
+- [Day16_Blink_100ms_fast.ino](../Projects/Day-16/Day16_Blink_100ms_fast.ino)
+- [Day16_Blink_2000ms_slow.ino](../Projects/Day-16/Day16_Blink_2000ms_slow.ino)
+- [Blinking Test Day 16.brd](../Projects/Day-16/Blinking%20Test%20Day%2016.brd) (Tinkercad circuit export)
 
 ## What I Learned
 Changing a single number in `delay()` changes how the whole circuit behaves. The Serial Monitor also showed me what the Arduino was doing, which makes it easier to check that the code and the LED agree.

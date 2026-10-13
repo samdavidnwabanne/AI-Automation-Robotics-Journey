@@ -1,7 +1,7 @@
 # Day 21: Temperature Sensing & Alert Systems
 
 ## Overview
-Today I built a temperature alarm system in Tinkercad Circuits using an Arduino Uno R3, a TMP36 temperature sensor, a buzzer, two LEDs and an arm/disarm push button. I tested the sensor and the buzzer on their own first, then combined them into a system that arms, warns and sounds an alarm based on the temperature.
+I built a temperature alarm system in Tinkercad Circuits using an Arduino Uno R3, a TMP36 temperature sensor, a buzzer, two LEDs and an arm/disarm push button. I tested the sensor and the buzzer on their own first, then combined them into a system that arms, warns and sounds an alarm based on the temperature.
 
 ## Concepts Explored
 - **TMP36 sensor:** gives 10 mV per degree Celsius, with 0.5 V at 0 °C. The sketch converts the reading with `voltage = analogRead(A1) * 5.0 / 1024.0` and `tempC = (voltage - 0.5) * 100.0`.

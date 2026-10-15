@@ -1,7 +1,7 @@
 # Day 23: Temperature Monitoring & LCD Display
 
 ## Overview
-Today I built a mini weather station in Tinkercad Circuits. An Arduino Uno reads temperature and humidity and shows both on a 16x2 LCD, refreshing every 2 seconds. I also added a comfort alert with a red LED and a button that switches the display between Celsius and Fahrenheit.
+I built a mini weather station in Tinkercad Circuits. An Arduino Uno reads temperature and humidity and shows both on a 16x2 LCD, refreshing every 2 seconds. I also added a comfort alert with a red LED and a button that switches the display between Celsius and Fahrenheit.
 
 ## Concepts Explored
 - Wiring a 16x2 LCD in 4-bit mode with the `LiquidCrystal` library

@@ -1,7 +1,7 @@
 # Day 24: Distance Sensing & Servo Motor Control
 
 ## Overview
-Today I built a smart door in Tinkercad Circuits. An ultrasonic distance sensor measures how far away an object is, and when something comes closer than 20 cm, a servo motor opens the door. A green LED shows the door is open and a red LED shows it is closed. For the level-up, I added a 2-second close delay with `millis()`, a buzzer beep when the door opens, and a lock button.
+I built a smart door in Tinkercad Circuits. An ultrasonic distance sensor measures how far away an object is, and when something comes closer than 20 cm, a servo motor opens the door. A green LED shows the door is open and a red LED shows it is closed. For the level-up, I added a 2-second close delay with `millis()`, a buzzer beep when the door opens, and a lock button.
 
 ## Concepts Explored
 - How an ultrasonic sensor works: it sends a burst of sound and times the echo

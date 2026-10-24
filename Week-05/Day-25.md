@@ -88,7 +88,8 @@ For the Week 5 review I chose the **Heat & Intruder Alarm** as my mini project a
 - [Heat Intruder Alarm Day 25.brd](../Projects/Day-25/Heat%20Intruder%20Alarm%20Day%2025.brd) – Tinkercad circuit file
 
 ## Problem I Hit and How I Fixed It
-(Write one real problem you hit while building this project and how you fixed it.)
+## Problem I Hit and How I Fixed It
+During the light sensor test, the Serial Monitor kept showing 0 no matter how I changed the LDR's brightness. After checking my wiring, I found that the red jumper wire from the LDR was plugged into the GND rail of the breadboard instead of the 5V rail. I moved it to the 5V rail and the readings started changing with the light. This taught me to check power and ground connections first when a sensor reads a constant value.
 
 ## What I Learned
 - Every project follows the same pattern: read a sensor, decide with if/else, then act.

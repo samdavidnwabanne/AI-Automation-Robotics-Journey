@@ -27,7 +27,7 @@ Both sensors can be combined in one Arduino sketch to display temperature, humid
 - **HC-SR04:** a reading of 0 means no echo came back, so it is ignored.
 
 ## Visuals
-**HC-SR04 and I2C LCD circuit in Tinkercad, with the live distance reading**
+**HC-SR04 and I2C LCD circuit in Tinkercad**
 
 ![Ultrasonic sensor and LCD circuit](../Projects/Images/Sensors%20Day%2026%20%28circuit%29.PNG)
 

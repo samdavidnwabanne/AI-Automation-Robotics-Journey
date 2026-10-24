@@ -12,15 +12,15 @@ Today I built a digital thermometer with a high-temperature alarm in Tinkercad C
 
 ```mermaid
 flowchart TD
-    A[Read temperature] --> B{Temp >= 32 C?}
-    B -- Yes --> C[Alarm ON]
-    B -- No --> D{Temp <= 30 C?}
-    D -- Yes --> E[Alarm OFF]
-    D -- No --> F[Keep the previous alarm state]
-    C --> G[Show temperature and status on LCD]
+    A["Read temperature"] --> B{"Temp 32 C or above?"}
+    B -- Yes --> C["Alarm ON"]
+    B -- No --> D{"Temp 30 C or below?"}
+    D -- Yes --> E["Alarm OFF"]
+    D -- No --> F["Keep the previous alarm state"]
+    C --> G["Show temperature and status on LCD"]
     E --> G
     F --> G
-    G --> H[LED and buzzer follow the alarm state]
+    G --> H["LED and buzzer follow the alarm state"]
     H --> A
 ```
 

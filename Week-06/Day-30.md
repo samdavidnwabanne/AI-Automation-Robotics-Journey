@@ -64,10 +64,6 @@ flowchart TD
 2. **Threshold logic with a gap (hysteresis).** The LOW and FULL values turn a measurement into a decision. The gap between them stops the pump from switching on and off rapidly near a limit.
 
 ## Visuals
-**Block diagram and flowchart**
-
-![Block diagram and flowchart](../Projects/Images/Project%20Plan%20Day%2030%20%28block%20diagram%20and%20flowchart%29.PNG)
-
 **First working sub-circuit**
 
 ![Sub-circuit](../Projects/Images/Project%20Plan%20Day%2030%20%28sub-circuit%29.PNG)
